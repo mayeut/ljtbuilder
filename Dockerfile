@@ -76,7 +76,7 @@ RUN yum install -y \
     libsepol-devel.x86_64 \
     openssl-devel.x86_64 \
     zlib-devel.x86_64
-    
+
 # install JDK
 RUN curl -L -H "Cookie: oraclelicense=accept-securebackup-cookie" -o /tmp/jdk64.rpm http://download.oracle.com/otn-pub/java/jdk/8u74-b02/jdk-8u74-linux-x64.rpm \
  && rpm -i /tmp/jdk64.rpm \
@@ -103,6 +103,4 @@ RUN cd / \
 CMD ["/bin/bash"]
 
 # To build LJT
-# docker run -v /Users/Matt/Dev/libjpeg-turbo/docker-build:/var/docker-build -ti ljtbuilder bash -c "git clone --depth=1 -b srcdir-build https://github.com/mayeut/buildscripts.git /home/mayeut/buildscripts && /home/mayeut/buildscripts/buildljt -b /var/docker-build/ljt -r /var/docker-build/libjpeg-turbo"
 # docker run -v /.../docker-build:/var/docker-build -ti ljtbuilder bash -c "/home/ljt/buildscripts/buildljt -b /var/docker-build/ljt -r /var/docker-build/libjpeg-turbo"
-    
