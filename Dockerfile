@@ -6,7 +6,7 @@ RUN yum -y update \
     curl.x86_64 \
     dpkg-devel.x86_64 \
     gcc.x86_64 \
-    gettext.x86_64 \
+    git.x86_64 \
     glibc.i686 \
     glibc-devel.i386 \
     glibc-devel.x86_64 \
@@ -17,7 +17,7 @@ RUN yum -y update \
     wget.x86_64 \
     zip.x86_64
 
-# Build autotools
+# Build autotools & NASM
 RUN curl -L http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.gz | tar -C /tmp -xz \
  && cd /tmp/m4-* \
  && ./configure \
@@ -38,52 +38,16 @@ RUN curl -L http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.gz | tar -C /tmp -xz \
  && cd /tmp/pkg-config-* \
  && ./configure --with-internal-glib \
  && make install
- 
-# Build NASM
-RUN curl http://www.nasm.us/pub/nasm/releasebuilds/2.12/nasm-2.12.tar.gz | tar -C /tmp -xz \
+ && curl http://www.nasm.us/pub/nasm/releasebuilds/2.12/nasm-2.12.tar.gz | tar -C /tmp -xz \
  && cd /tmp/nasm-* \
  && ./configure \
  && make install
- 
-# Build GIT
-RUN yum install -y \
-    curl-devel.x86_64 \
-    cvs.x86_64 \
-    e2fsprogs-devel.x86_64 \
-    expat-devel.x86_64 \
-    gettext-devel.x86_64 \
-    keyutils-libs-devel.x86_64 \
-    krb5-devel.x86_64 \
-    libidn-devel.x86_64 \
-    libselinux-devel.x86_64 \
-    libsepol-devel.x86_64 \
-    openssl-devel.x86_64 \
-    zlib-devel.x86_64 \
- && curl -L https://www.kernel.org/pub/software/scm/git/git-2.7.2.tar.gz | tar -C /tmp -xz \
- && cd /tmp/git-* \
- && ./configure --without-tcltk \
- && make install \
- && yum remove -y \
-    curl-devel.x86_64 \
-    cvs.x86_64 \
-    e2fsprogs-devel.x86_64 \
-    expat-devel.x86_64 \
-    gettext-devel.x86_64 \
-    keyutils-libs-devel.x86_64 \
-    krb5-devel.x86_64 \
-    libidn-devel.x86_64 \
-    libselinux-devel.x86_64 \
-    libsepol-devel.x86_64 \
-    openssl-devel.x86_64 \
-    zlib-devel.x86_64
 
 # install JDK
 RUN curl -L -H "Cookie: oraclelicense=accept-securebackup-cookie" -o /tmp/jdk64.rpm http://download.oracle.com/otn-pub/java/jdk/8u74-b02/jdk-8u74-linux-x64.rpm \
  && rpm -i /tmp/jdk64.rpm \
  && curl -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u74-b02/jdk-8u74-linux-i586.tar.gz | tar -C /opt -xz \
  && ln -s /opt/jdk1.8.0_74 /usr/java/default32
-
-RUN git clone --depth=1 https://github.com/libjpeg-turbo/buildscripts.git /home/ljt/buildscripts
 
 #steps for cleaning the image are taken from https://github.com/CentOS/sig-cloud-instance-build/blob/master/docker/centos-5.11.ks  
 RUN cd / \
@@ -98,6 +62,8 @@ RUN cd / \
  && rm -rf /etc/ld.so.cache \
  && rm -rf /var/cache/ldconfig/* \
  && rm -rf /tmp/*
+
+RUN git clone --depth=1 https://github.com/libjpeg-turbo/buildscripts.git /home/ljt/buildscripts
 
 # Set default command
 CMD ["/bin/bash"]
