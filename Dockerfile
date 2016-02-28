@@ -111,4 +111,3 @@ CMD ["/bin/bash"]
 
 # To build LJT
 # docker run -v /.../docker-build:/var/docker-build -ti ljtbuilder bash -c "/home/ljt/buildscripts/buildljt -b /var/docker-build/ljt -r /var/docker-build/libjpeg-turbo"
-    
