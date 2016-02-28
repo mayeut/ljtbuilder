@@ -49,15 +49,16 @@ RUN yum -y update \
            /usr/java/default/lib/missioncontrol \
            /usr/java/default/lib/visualvm \
            /usr/java/default/lib/*javafx* \
-           /usr/java/default/jre/lib/plugin.jar \
-           /usr/java/default/jre/lib/ext/jfxrt.jar \
            /usr/java/default/jre/bin/javaws \
+           /usr/java/default/jre/lib/plugin.jar \
            /usr/java/default/jre/lib/javaws.jar \
-           /usr/java/default/jre/lib/desktop \
-           /usr/java/default/jre/plugin \
+           /usr/java/default/jre/lib/desktop/* \
            /usr/java/default/jre/lib/deploy* \
            /usr/java/default/jre/lib/*javafx* \
            /usr/java/default/jre/lib/*jfx* \
+           /usr/java/default/jre/lib/ext/* \
+           /usr/java/default/jre/lib/jfr* \
+           /usr/java/default/jre/lib/oblique-fonts/* \
            /usr/java/default/jre/lib/amd64/libdecora_sse.so \
            /usr/java/default/jre/lib/amd64/libprism_*.so \
            /usr/java/default/jre/lib/amd64/libfxplugins.so \
@@ -65,6 +66,7 @@ RUN yum -y update \
            /usr/java/default/jre/lib/amd64/libgstreamer-lite.so \
            /usr/java/default/jre/lib/amd64/libjavafx*.so \
            /usr/java/default/jre/lib/amd64/libjfx*.so \
+           /usr/java/default/jre/plugin/* \
  && mkdir -p /opt/jdk32 \
  && curl -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u74-b02/jdk-8u74-linux-i586.tar.gz | tar -C /opt/jdk32 -xz \
  && ln -s /opt/jdk32/jdk1.8.0_74 /usr/java/default32 \
@@ -73,14 +75,16 @@ RUN yum -y update \
            /usr/java/default32/lib/visualvm \
            /usr/java/default32/lib/*javafx* \
            /usr/java/default32/jre/lib/plugin.jar \
-           /usr/java/default32/jre/lib/ext/jfxrt.jar \
            /usr/java/default32/jre/bin/javaws \
            /usr/java/default32/jre/lib/javaws.jar \
-           /usr/java/default32/jre/lib/desktop \
-           /usr/java/default32/jre/plugin \
+           /usr/java/default32/jre/lib/desktop/* \
+           /usr/java/default32/jre/plugin/* \
            /usr/java/default32/jre/lib/deploy* \
            /usr/java/default32/jre/lib/*javafx* \
            /usr/java/default32/jre/lib/*jfx* \
+           /usr/java/default32/jre/lib/ext/* \
+           /usr/java/default32/jre/lib/jfr* \
+           /usr/java/default32/jre/lib/oblique-fonts/* \
            /usr/java/default32/jre/lib/i386/libdecora_sse.so \
            /usr/java/default32/jre/lib/i386/libprism_*.so \
            /usr/java/default32/jre/lib/i386/libfxplugins.so \
