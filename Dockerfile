@@ -15,10 +15,8 @@ RUN yum -y update \
     rpm-build.x86_64 \
     sudo.x86_64 \
     wget.x86_64 \
-    zip.x86_64
-
-# Build autotools & NASM
-RUN curl -L http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.gz | tar -C /tmp -xz \
+    zip.x86_64 \
+ && curl -L http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.gz | tar -C /tmp -xz \
  && cd /tmp/m4-* \
  && ./configure \
  && make install \
@@ -41,16 +39,57 @@ RUN curl -L http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.gz | tar -C /tmp -xz \
  && curl http://www.nasm.us/pub/nasm/releasebuilds/2.12/nasm-2.12.tar.gz | tar -C /tmp -xz \
  && cd /tmp/nasm-* \
  && ./configure \
- && make install
-
-# install JDK
-RUN curl -L -H "Cookie: oraclelicense=accept-securebackup-cookie" -o /tmp/jdk64.rpm http://download.oracle.com/otn-pub/java/jdk/8u74-b02/jdk-8u74-linux-x64.rpm \
- && rpm -i /tmp/jdk64.rpm \
- && curl -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u74-b02/jdk-8u74-linux-i586.tar.gz | tar -C /opt -xz \
- && ln -s /opt/jdk1.8.0_74 /usr/java/default32
-
-#steps for cleaning the image are taken from https://github.com/CentOS/sig-cloud-instance-build/blob/master/docker/centos-5.11.ks  
-RUN cd / \
+ && make install \  
+ && mkdir -p /usr/java \
+ && mkdir -p /opt/jdk64 \
+ && curl -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u74-b02/jdk-8u74-linux-x64.tar.gz | tar -C /opt/jdk64 -xz \
+ && ln -s /opt/jdk64/jdk1.8.0_74 /usr/java/latest \
+ && ln -s /usr/java/latest /usr/java/default \
+ && rm -rf /usr/java/default/*src.zip \
+           /usr/java/default/lib/missioncontrol \
+           /usr/java/default/lib/visualvm \
+           /usr/java/default/lib/*javafx* \
+           /usr/java/default/jre/lib/plugin.jar \
+           /usr/java/default/jre/lib/ext/jfxrt.jar \
+           /usr/java/default/jre/bin/javaws \
+           /usr/java/default/jre/lib/javaws.jar \
+           /usr/java/default/jre/lib/desktop \
+           /usr/java/default/jre/plugin \
+           /usr/java/default/jre/lib/deploy* \
+           /usr/java/default/jre/lib/*javafx* \
+           /usr/java/default/jre/lib/*jfx* \
+           /usr/java/default/jre/lib/amd64/libdecora_sse.so \
+           /usr/java/default/jre/lib/amd64/libprism_*.so \
+           /usr/java/default/jre/lib/amd64/libfxplugins.so \
+           /usr/java/default/jre/lib/amd64/libglass.so \
+           /usr/java/default/jre/lib/amd64/libgstreamer-lite.so \
+           /usr/java/default/jre/lib/amd64/libjavafx*.so \
+           /usr/java/default/jre/lib/amd64/libjfx*.so \
+ && mkdir -p /opt/jdk32 \
+ && curl -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u74-b02/jdk-8u74-linux-i586.tar.gz | tar -C /opt/jdk32 -xz \
+ && ln -s /opt/jdk32/jdk1.8.0_74 /usr/java/default32 \
+ && rm -rf /usr/java/default32/*src.zip \
+           /usr/java/default32/lib/missioncontrol \
+           /usr/java/default32/lib/visualvm \
+           /usr/java/default32/lib/*javafx* \
+           /usr/java/default32/jre/lib/plugin.jar \
+           /usr/java/default32/jre/lib/ext/jfxrt.jar \
+           /usr/java/default32/jre/bin/javaws \
+           /usr/java/default32/jre/lib/javaws.jar \
+           /usr/java/default32/jre/lib/desktop \
+           /usr/java/default32/jre/plugin \
+           /usr/java/default32/jre/lib/deploy* \
+           /usr/java/default32/jre/lib/*javafx* \
+           /usr/java/default32/jre/lib/*jfx* \
+           /usr/java/default32/jre/lib/i386/libdecora_sse.so \
+           /usr/java/default32/jre/lib/i386/libprism_*.so \
+           /usr/java/default32/jre/lib/i386/libfxplugins.so \
+           /usr/java/default32/jre/lib/i386/libglass.so \
+           /usr/java/default32/jre/lib/i386/libgstreamer-lite.so \
+           /usr/java/default32/jre/lib/i386/libjavafx*.so \
+           /usr/java/default32/jre/lib/i386/libjfx*.so \
+ && git clone --depth=1 https://github.com/libjpeg-turbo/buildscripts.git /home/ljt/buildscripts \
+ && cd / \
  && yum clean all \
  && find /usr/lib/locale/ -mindepth 1 -maxdepth 1 -type d -not -path '*en_US*' -exec rm -rf {} \; \
  && find /usr/share/locale/ -mindepth 1 -maxdepth 1 -type d -not -path '*en_US*' -exec rm -rf {} \; \
@@ -63,10 +102,13 @@ RUN cd / \
  && rm -rf /var/cache/ldconfig/* \
  && rm -rf /tmp/*
 
-RUN git clone --depth=1 https://github.com/libjpeg-turbo/buildscripts.git /home/ljt/buildscripts
+# Set environment
+ENV JAVA_HOME /usr/java/default
+ENV PATH ${PATH}:${JAVA_HOME}/bin
 
 # Set default command
 CMD ["/bin/bash"]
 
 # To build LJT
 # docker run -v /.../docker-build:/var/docker-build -ti ljtbuilder bash -c "/home/ljt/buildscripts/buildljt -b /var/docker-build/ljt -r /var/docker-build/libjpeg-turbo"
+    
