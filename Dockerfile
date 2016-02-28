@@ -37,7 +37,7 @@ RUN curl -L http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.gz | tar -C /tmp -xz \
  && curl -L https://pkg-config.freedesktop.org/releases/pkg-config-0.29.tar.gz | tar -C /tmp -xz \
  && cd /tmp/pkg-config-* \
  && ./configure --with-internal-glib \
- && make install
+ && make install \
  && curl http://www.nasm.us/pub/nasm/releasebuilds/2.12/nasm-2.12.tar.gz | tar -C /tmp -xz \
  && cd /tmp/nasm-* \
  && ./configure \
