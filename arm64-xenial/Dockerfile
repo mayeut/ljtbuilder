@@ -1,4 +1,5 @@
 FROM multiarch/ubuntu-core:arm64-xenial
+ARG ARCH=aarch64
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		autoconf \
