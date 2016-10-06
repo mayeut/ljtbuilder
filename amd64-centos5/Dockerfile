@@ -3,73 +3,40 @@ FROM centos:5
 RUN yum -y update \
  && yum -y install epel-release.noarch \
  && yum -y install \
-    curl.x86_64 \
-    dpkg-devel.x86_64 \
+    dpkg.x86_64 \
+    expect.x86_64 \
     gcc.x86_64 \
+    gnupg.x86_64 \
+    glibc-devel \
     git.x86_64 \
-    glibc.i686 \
-    glibc-devel.i386 \
-    glibc-devel.x86_64 \
+    java-1.6.0-openjdk-devel.x86_64 \
     libgcc.i386 \
     make.x86_64 \
     rpm-build.x86_64 \
-    sudo.x86_64 \
     wget.x86_64 \
     zip.x86_64 \
- && curl -L http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.gz | tar -C /tmp -xz \
- && cd /tmp/m4-* \
- && ./configure \
+ && mkdir -p ~/src/buildscripts \
+ && git clone --depth=1 https://github.com/libjpeg-turbo/buildscripts.git ~/src/buildscripts/libjpeg-turbo \
+ && ~/src/buildscripts/libjpeg-turbo/autotools.install \
+ && git clone --depth=1 https://gitlab.com/debsigs/debsigs.git -b debsigs-0.1.15%7Eroam1 ~/src/debsigs \
+ && pushd ~/src/debsigs \
+ && perl Makefile.PL \
  && make install \
- && curl -L http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz | tar -C /tmp -xz \
- && cd /tmp/autoconf-* \
- && ./configure \
- && make install \
- && curl -L http://ftp.gnu.org/gnu/libtool/libtool-2.4.6.tar.gz | tar -C /tmp -xz \
- && cd /tmp/libtool-* \
- && ./configure \
- && make install \
- && curl -L http://ftp.gnu.org/gnu/automake/automake-1.15.tar.gz | tar -C /tmp -xz \
- && cd /tmp/automake-* \
- && ./configure \
- && make install \
- && curl -L https://pkg-config.freedesktop.org/releases/pkg-config-0.29.tar.gz | tar -C /tmp -xz \
- && cd /tmp/pkg-config-* \
- && ./configure --with-internal-glib \
- && make install \
- && curl http://www.nasm.us/pub/nasm/releasebuilds/2.12/nasm-2.12.tar.gz | tar -C /tmp -xz \
- && cd /tmp/nasm-* \
- && ./configure \
- && make install \  
- && mkdir -p /usr/java \
- && mkdir -p /opt/jdk64 \
- && curl -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u74-b02/jdk-8u74-linux-x64.tar.gz | tar -C /opt/jdk64 -xz \
- && ln -s /opt/jdk64/jdk1.8.0_74 /usr/java/latest \
- && ln -s /usr/java/latest /usr/java/default \
- && rm -rf /usr/java/default/*src.zip \
-           /usr/java/default/lib/missioncontrol \
-           /usr/java/default/lib/visualvm \
-           /usr/java/default/lib/*javafx* \
-           /usr/java/default/jre/bin/javaws \
-           /usr/java/default/jre/lib/plugin.jar \
-           /usr/java/default/jre/lib/javaws.jar \
-           /usr/java/default/jre/lib/desktop/* \
-           /usr/java/default/jre/lib/deploy* \
-           /usr/java/default/jre/lib/*javafx* \
-           /usr/java/default/jre/lib/*jfx* \
-           /usr/java/default/jre/lib/ext/* \
-           /usr/java/default/jre/lib/jfr* \
-           /usr/java/default/jre/lib/oblique-fonts/* \
-           /usr/java/default/jre/lib/amd64/libdecora_sse.so \
-           /usr/java/default/jre/lib/amd64/libprism_*.so \
-           /usr/java/default/jre/lib/amd64/libfxplugins.so \
-           /usr/java/default/jre/lib/amd64/libglass.so \
-           /usr/java/default/jre/lib/amd64/libgstreamer-lite.so \
-           /usr/java/default/jre/lib/amd64/libjavafx*.so \
-           /usr/java/default/jre/lib/amd64/libjfx*.so \
-           /usr/java/default/jre/plugin/* \
- && mkdir -p /opt/jdk32 \
- && curl -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u74-b02/jdk-8u74-linux-i586.tar.gz | tar -C /opt/jdk32 -xz \
- && ln -s /opt/jdk32/jdk1.8.0_74 /usr/java/default32 \
+ && popd \
+ && rm -rf ~/src \
+ && mkdir -p /usr/src/redhat \
+ && yum -y install \
+    ghostscript.x86_64 \
+    texinfo.x86_64 \
+ && rpm -i http://www.nasm.us/pub/nasm/releasebuilds/2.10.09/linux/nasm-2.10.09-1.src.rpm \
+ && rpmbuild -ba /usr/src/redhat/SPECS/nasm.spec \
+ && rpm -i /usr/src/redhat/RPMS/x86_64/nasm-[0-9]*.x86_64.rpm \
+ && rm -rf /usr/src/redhat \
+ && yum -y remove audit-libs-python fontconfig libfontenc libgpg-error libselinux-python libsemanage libtiff libFS libICE texinfo ttmkfdir \
+ && mkdir /usr/java \
+ && ln -fs /etc/alternatives/java_sdk /usr/java/default \
+ && curl -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u101-b13/jdk-8u101-linux-i586.tar.gz | tar -C /usr/java/ -xz \
+ && ln -fs /usr/java/jdk1.8.0_101 /usr/java/default32 \
  && rm -rf /usr/java/default32/*src.zip \
            /usr/java/default32/lib/missioncontrol \
            /usr/java/default32/lib/visualvm \
@@ -92,26 +59,20 @@ RUN yum -y update \
            /usr/java/default32/jre/lib/i386/libgstreamer-lite.so \
            /usr/java/default32/jre/lib/i386/libjavafx*.so \
            /usr/java/default32/jre/lib/i386/libjfx*.so \
- && git clone --depth=1 https://github.com/libjpeg-turbo/buildscripts.git /home/ljt/buildscripts \
  && cd / \
  && yum clean all \
  && find /usr/lib/locale/ -mindepth 1 -maxdepth 1 -type d -not -path '*en_US*' -exec rm -rf {} \; \
  && find /usr/share/locale/ -mindepth 1 -maxdepth 1 -type d -not -path '*en_US*' -exec rm -rf {} \; \
  && localedef --list-archive | grep -v -i ^en | xargs localedef --delete-from-archive \
- && mv /usr/lib/locale/locale-archive  /usr/lib/locale/locale-archive.tmpl \
+ && mv /usr/lib/locale/locale-archive /usr/lib/locale/locale-archive.tmpl \
  && /usr/sbin/build-locale-archive \
  && echo "" >/usr/lib/locale/locale-archive.tmpl \
  && find /usr/share/{man,doc,info} -type f -delete \
- && rm -rf /etc/ld.so.cache \
- && rm -rf /var/cache/ldconfig/* \
+ && rm -rf /etc/ld.so.cache \ && rm -rf /var/cache/ldconfig/* \
  && rm -rf /tmp/*
 
 # Set environment
-ENV JAVA_HOME /usr/java/default
-ENV PATH ${PATH}:${JAVA_HOME}/bin
+ENV PATH /opt/autotools/bin:${PATH}
 
 # Set default command
 CMD ["/bin/bash"]
-
-# To build LJT
-# docker run -v /.../docker-build:/var/docker-build -ti ljtbuilder bash -c "/home/ljt/buildscripts/buildljt -b /var/docker-build/ljt -r /var/docker-build/libjpeg-turbo"
