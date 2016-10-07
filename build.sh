@@ -6,7 +6,8 @@ DOCKER_REPO=ljtbuilder2
 TAGS="amd64-centos5 arm64-xenial armhf-xenial ppc64el-xenial"
 
 if [ "${GENERATE_TRAVIS}" == "1" ]; then
-	echo "matrix:" > .travis.yml
+	echo "language: c" > .travis.yml
+	echo "matrix:" >> .travis.yml
 fi
 
 for TAG in ${TAGS}; do
