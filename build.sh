@@ -6,13 +6,12 @@ DOCKER_REPO=ljtbuilder2
 TAGS="amd64-centos5 arm64-xenial armhf-xenial ppc64el-xenial"
 
 if [ "${GENERATE_TRAVIS}" == "1" ]; then
-	echo "language: c" > .travis.yml
-	echo "matrix:" >> .travis.yml
+	echo "matrix:" > .travis.yml
+	echo "  include:" >> .travis.yml
 fi
 
 for TAG in ${TAGS}; do
 	if [ "${GENERATE_TRAVIS}" == "1" ]; then
-		echo "  include:" >> .travis.yml
 		echo "    - os: linux" >> .travis.yml
 		echo "      env: DOCKER_TAG=${TAG}" >> .travis.yml
 		echo "      sudo: required" >> .travis.yml
