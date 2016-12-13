@@ -18,6 +18,7 @@ for TAG in ${TAGS}; do
 		echo "      services:" >> .travis.yml
 		echo "        - docker" >> .travis.yml
 	else
+		./get-dependencies.sh ${TAG}
 		docker build -t ${DOCKER_USER}/${DOCKER_REPO}:${TAG} ${TAG}
 		if [ "${DOCKER_DO_PUSH}" == "1" ]; then
 			docker push ${DOCKER_USER}/${DOCKER_REPO}:${TAG}
