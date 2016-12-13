@@ -23,7 +23,7 @@ matrix:
 before_install:
   - docker run --rm --privileged multiarch/qemu-user-static:register
 script:
-  - ./get-dependencies.sh ${TAG}
+  - ./get-dependencies.sh ${DOCKER_TAG}
   - docker build -t mayeut/ljtbuilder2:${DOCKER_TAG} ${DOCKER_TAG}
 after_success:
   - if [ "${TRAVIS_BRANCH}" == "master" ] && [ "${DOCKER_PUSH}" == "1" ]; then

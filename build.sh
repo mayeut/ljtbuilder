@@ -30,7 +30,7 @@ if [ "${GENERATE_TRAVIS}" == "1" ]; then
 	echo "before_install:" >> .travis.yml
 	echo "  - docker run --rm --privileged multiarch/qemu-user-static:register" >> .travis.yml
 	echo "script:" >> .travis.yml
-	echo "  - ./get-dependencies.sh \${TAG}" >> .travis.yml
+	echo "  - ./get-dependencies.sh \${DOCKER_TAG}" >> .travis.yml
 	echo "  - docker build -t ${DOCKER_USER}/${DOCKER_REPO}:\${DOCKER_TAG} \${DOCKER_TAG}" >> .travis.yml
 	echo "after_success:" >> .travis.yml
 	echo "  - if [ \"\${TRAVIS_BRANCH}\" == \"master\" ] && [ \"\${DOCKER_PUSH}\" == \"1\" ]; then" >> .travis.yml
