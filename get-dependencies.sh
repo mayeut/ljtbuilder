@@ -20,9 +20,7 @@ if [ ! -f x86_64_qemu-${ARCH_QEMU}-static.tar.gz ]; then
 fi
 wget -N https://partner-images.canonical.com/core/${OS}/current/ubuntu-${OS}-core-cloudimg-${ARCH}-root.tar.gz
 wget -N https://partner-images.canonical.com/core/${OS}/current/SHA1SUMS
-if [ "$(uname -s)" == "Darwin" ]; then
-	sha1sum -c SHA1SUMS
-else
-	sha1sum --ignore-missing -c SHA1SUMS
-fi
+sed -i.bak "/ubuntu-${OS}-core-cloudimg-${ARCH}-root.tar.gz/!d" SHA1SUMS
+rm SHA1SUMS.bak
+sha1sum -c SHA1SUMS
 popd
