@@ -20,8 +20,23 @@ matrix:
       sudo: required
       services:
         - docker
+    - os: linux
+      env: DOCKER_TAG=ppc64le-fedora25
+      sudo: required
+      services:
+        - docker
+    - os: linux
+      env: DOCKER_TAG=ppc64-fedora24
+      sudo: required
+      services:
+        - docker
+    - os: linux
+      env: DOCKER_TAG=aarch64-fedora25
+      sudo: required
+      services:
+        - docker
 before_install:
-  - docker run --rm --privileged multiarch/qemu-user-static:register
+  - docker run --rm --privileged mayeut/qemu-user-static:register
 script:
   - ./get-dependencies.sh ${DOCKER_TAG}
   - docker build -t mayeut/ljtbuilder2:${DOCKER_TAG} ${DOCKER_TAG}

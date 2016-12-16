@@ -3,7 +3,7 @@
 DOCKER_USER=mayeut
 DOCKER_REPO=ljtbuilder2
 
-TAGS="amd64-centos5 arm64-xenial armhf-xenial ppc64el-xenial"
+TAGS="amd64-centos5 arm64-xenial armhf-xenial ppc64el-xenial ppc64le-fedora25 ppc64-fedora24 aarch64-fedora25"
 
 if [ "${GENERATE_TRAVIS}" == "1" ]; then
 	echo "matrix:" > .travis.yml
@@ -28,7 +28,7 @@ done
 
 if [ "${GENERATE_TRAVIS}" == "1" ]; then
 	echo "before_install:" >> .travis.yml
-	echo "  - docker run --rm --privileged multiarch/qemu-user-static:register" >> .travis.yml
+	echo "  - docker run --rm --privileged mayeut/qemu-user-static:register" >> .travis.yml
 	echo "script:" >> .travis.yml
 	echo "  - ./get-dependencies.sh \${DOCKER_TAG}" >> .travis.yml
 	echo "  - docker build -t ${DOCKER_USER}/${DOCKER_REPO}:\${DOCKER_TAG} \${DOCKER_TAG}" >> .travis.yml
