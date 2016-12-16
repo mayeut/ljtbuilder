@@ -1,3 +1,5 @@
 *.tar*
+*/json
+*/VERSION
 SHA1SUMS
 

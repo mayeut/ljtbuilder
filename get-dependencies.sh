@@ -34,7 +34,7 @@ elif [ "${OS}" == "fedora25" ]; then
 	if [ -f Fedora-Docker-Base-25-${REVISION}.${ARCH}.tar ]; then
 		rm Fedora-Docker-Base-25-${REVISION}.${ARCH}.tar
 	fi
-	tar -xf Fedora-Docker-Base-25-${REVISION}.${ARCH}.tar.xz --strip-components 1 --include '*/layer.tar'
+	tar -xf Fedora-Docker-Base-25-${REVISION}.${ARCH}.tar.xz --strip-components 1
 	mv layer.tar Fedora-Docker-Base-25-${REVISION}.${ARCH}.tar
 elif [ "${OS}" == "fedora24" ]; then
 	REVISION=1.2
@@ -42,7 +42,7 @@ elif [ "${OS}" == "fedora24" ]; then
 	if [ -f Fedora-Docker-Base-24-${REVISION}.${ARCH}.tar ]; then
 		rm Fedora-Docker-Base-24-${REVISION}.${ARCH}.tar
 	fi
-	tar -xf Fedora-Docker-Base-24-${REVISION}.${ARCH}.tar.xz --strip-components 1 --include '*/layer.tar'
+	tar -xf Fedora-Docker-Base-24-${REVISION}.${ARCH}.tar.xz --strip-components 1
 	mv layer.tar Fedora-Docker-Base-24-${REVISION}.${ARCH}.tar
 else
 	exit 1
