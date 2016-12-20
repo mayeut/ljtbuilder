@@ -18,6 +18,10 @@ cd ${TAG}
 
 if [ ! -f x86_64_qemu-${ARCH_QEMU}-static.tar.gz ]; then
 	wget -N https://github.com/multiarch/qemu-user-static/releases/download/v2.7.0/x86_64_qemu-${ARCH_QEMU}-static.tar.gz
+	if [ "${ARCH_QEMU}" == "mipsel" ]; then
+		tar -xf x86_64_qemu-${ARCH_QEMU}-static.tar.gz
+		mv qemu-mipsel-static qemu-mipsn32el-static
+	fi
 fi
 if [ "${OS}" == "xenial" ]; then
 	wget -N https://partner-images.canonical.com/core/${OS}/current/ubuntu-${OS}-core-cloudimg-${ARCH}-root.tar.gz
@@ -44,6 +48,8 @@ elif [ "${OS}" == "fedora24" ]; then
 	fi
 	tar -xf Fedora-Docker-Base-24-${REVISION}.${ARCH}.tar.xz --strip-components 1
 	mv layer.tar Fedora-Docker-Base-24-${REVISION}.${ARCH}.tar
+elif [ "${OS}" == "jessie" ]; then
+	echo "Do nothing" > /dev/null
 else
 	exit 1
 fi

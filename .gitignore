@@ -1,5 +1,6 @@
 *.tar*
 */json
 */VERSION
+*/*qemu*
 SHA1SUMS
 
